@@ -9,7 +9,8 @@ typedef unsigned int uint32;
 #define VGA_ADDRESS 0xB8000
 #define BUFSIZE 2200
 
-uint16* vga_buffer;
+unsigned short* terminal_buffer;
+unsigned int vga_index;
 
 #define NULL 0
 

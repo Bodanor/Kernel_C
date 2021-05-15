@@ -11,10 +11,10 @@ ISO_PATH=kernel_$(KERNELVER)_qemu
 BOOT_PATH=$(ISO_PATH)/boot
 GRUB_PATH=$(BOOT_PATH)/grub
 
-.PHONY : kernel/kernel.o
+.PHONY : kernel/kernel.o source/utils.o
 
 
-all: boot.o kernel/kernel.o $(BIN) iso
+all: boot.o kernel/kernel.o source/utils.o $(BIN) iso
 	@echo Make has completed.
 
 boot.o: boot/boot.s
@@ -23,8 +23,12 @@ boot.o: boot/boot.s
 kernel/kernel.o:
 	(cd kernel; make)
 	
-$(BIN): linker.ld boot.o kernel/kernel.o
-	$(LD) -T linker.ld kernel/kernel.o boot.o -o $(BIN) $(LDFLAGS)
+source/utils.o:
+	(cd source; make)
+
+
+$(BIN): linker.ld boot.o kernel/kernel.o source/utils.o
+	$(LD) -T linker.ld kernel/kernel.o source/utils.o boot.o -o $(BIN) $(LDFLAGS)
 
 iso grub/grub.cfg:
 	mkdir -p $(GRUB_PATH)
@@ -37,3 +41,4 @@ iso grub/grub.cfg:
 clean:
 	rm -rf *.o $(BIN) $(ISO_PATH)
 	(cd kernel;make clean)
+	(cd source; make clean)
