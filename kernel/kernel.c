@@ -70,9 +70,9 @@ void print_string(char *str)
 
 void main(void)
 {
-    char *first_line = "It's my first kernel !\n";
-    char *second_line = "Version 0.0.1\n";
+    char *kernel_ver = "Kernel version 0.0.1 !\n";
+    char *second_line = "Hello World !\n";
     init_vga(WHITE, BLUE);
-    print_string(first_line);
+    print_string(kernel_ver);
     print_string(second_line);
 }
