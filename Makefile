@@ -1,33 +1,39 @@
-CP := cp
-RM := rm -rf
-MKDIR := mkdir -pv
+KERNELVER=0.0.1
 
-BIN = kernel
-CFG = grub.cfg
-ISO_PATH := iso
-BOOT_PATH := $(ISO_PATH)/boot
-GRUB_PATH := $(BOOT_PATH)/grub
+AS=as
+ASFLAGS= --32
+LD=ld
+LDFLAGS=-m elf_i386 -nostdlib
 
-.PHONY: all
-all: bootloader kernel linker iso
+BIN=kernel_$(KERNELVER).bin
+ISO=kernel_$(KERNELVER).iso
+ISO_PATH=kernel_$(KERNELVER)_qemu
+BOOT_PATH=$(ISO_PATH)/boot
+GRUB_PATH=$(BOOT_PATH)/grub
+
+.PHONY : kernel/kernel.o
+
+
+all: boot.o kernel/kernel.o $(BIN) iso
 	@echo Make has completed.
 
-bootloader: boot.asm
-	nasm -f elf32 boot.asm -o boot.o
+boot.o: boot/boot.s
+	$(AS) boot/boot.s -o boot.o $(ASFLAGS)
 
-kernel: kernel.c
-	gcc -m32 -c kernel.c -o kernel.o
+kernel/kernel.o:
+	(cd kernel; make)
+	
+$(BIN): linker.ld boot.o kernel/kernel.o
+	$(LD) -T linker.ld kernel/kernel.o boot.o -o $(BIN) $(LDFLAGS)
 
-linker: linker.ld boot.o kernel.o
-	ld -m elf_i386 -T linker.ld -o kernel boot.o kernel.o
+iso grub/grub.cfg:
+	mkdir -p $(GRUB_PATH)
+	cp $(BIN) $(BOOT_PATH)
+	cp grub/grub.cfg $(GRUB_PATH)
+	grub-mkrescue -o $(ISO) $(ISO_PATH)
 
-iso: kernel
-	$(MKDIR) $(GRUB_PATH)
-	$(CP) $(BIN) $(BOOT_PATH)
-	$(CP) $(CFG) $(GRUB_PATH)
-	grub-file --is-x86-multiboot $(BOOT_PATH)/$(BIN)
-	grub-mkrescue -o my_first_kernel.iso $(ISO_PATH)
 
-.PHONY : clean
+
 clean:
-	$(RM) *.o $(BIN) *iso
+	rm -rf *.o $(BIN) $(ISO_PATH)
+	(cd kernel;make clean)
