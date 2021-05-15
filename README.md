@@ -58,7 +58,7 @@ To get them all, run the following command on your terminal :
    ```
 5. You sould know get a new file called :
   ```sh
-   -rw-rw-r-- 1 liwinux liwinux 11448320 mei 15 20:04 kernel_X.X.X.iso
+   kernel_X.X.X.iso
    ```
 
 
