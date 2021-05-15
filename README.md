@@ -16,10 +16,10 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#Building the kernel">Installation</a></li>
+        <li><a href="#building-the-kernel">Building the kernel</a></li>
       </ul>
     </li>
-    <li><a href="#Boot the kernel">Usage</a></li>
+    <li><a href="#boot-the-kernel">Boot the kernel</a></li>
   </ol>
 </details>
 
@@ -31,7 +31,7 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 In order to build it you need the latest version of GCC, as, make.
-To get them all run the following command on your terminal :
+To get them all, run the following command on your terminal :
 
 * build-essential
   ```sh
@@ -79,7 +79,7 @@ In order to boot the newly created kernel you have 3 options :
 <br />
 <p align="center">
   <a href="https://github.com/Bodanor/Kernel_C">
-    <img src="images/qemu_screenshot.png" alt="Logo" width="80" height="80">
+    <img src="images/qemu_screenshot.png" alt="Logo" width="715" height="459">
   </a>
 </p>
 
