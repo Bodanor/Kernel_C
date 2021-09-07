@@ -64,6 +64,7 @@ printLoop:
     mov bh, 0x0
     mov cx, 0x1
 
+
     int 0x10
     /*
     I use int 0x10 again but with to write in teletext as using int 0x10 with ah = 0x9 doesn't move the cursor
