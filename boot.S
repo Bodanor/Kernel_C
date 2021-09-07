@@ -55,6 +55,7 @@ _init:
     */
     cmp dl, 80
     jb badDrive
+    
 
     cmp dl, 0x8f
     ja badBoot
@@ -108,6 +109,8 @@ printEnd:
     ret
 
 err:
+    push 0xb800
+    pop es
     .h:hlt
     jmp .h
 
@@ -127,10 +130,10 @@ switchedResSuccessMSG:
     .asciz "Switched to 80x25 16 color text !"
 
 badDriveMsg:
-    .asciz "Bad Drive Number given from the BIOS"
+    .asciz "Bad Drive Number given from the BIOS! Restarting in 5 seconds"
 
 badBootMSG:
-    .asciz "An error occured at the booting process! Is your image broken ?"
+    .asciz "An error occured at the booting process! Restarting in 5 seconds"
 
 . = _start + 510 # Filling up space to match 512 bytes as the next MAGIC number must be at the 512th byte.
 .word 0xaa55 # This is the MAGIC numebr for the MBR. It must always be this value !
