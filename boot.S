@@ -64,6 +64,9 @@ printLoop:
     /*
     Here I'm using ah = 0x09 because we have the choice to set character attributes (background and foreground color) when calling
     this function (just to flex :))
+    The reason why it didn't worked before was beacause switching to `12  640x480 16 color graphics (VGA)` causes
+    the video address memeory to change from 0xb000 to 0xa000. 640x480x16 is a graphics mode, a planar one. color text isn't
+    the same as color graphics!
     */
     mov ah, 0x09
     mov bh, 0x0
