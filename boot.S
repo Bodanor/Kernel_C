@@ -34,18 +34,23 @@ _init:
     mov sp, 0x7c00
 
 
-    # We will disable the blinking cursor here:
+
+    /*
+    Switching resolution here and disabling the blinking cursor just for the fun of it :)
+    */
+    mov ah, 0
+    mov al, 0x3
+    int 0x10
+
     mov ah, 0x01
     mov ch, 0x3f
     int 0x10
 
-    
-
-afterSwitched:
-    mov si, offset flat:switchedModeMSG
-    mov bl, 0xF3
+    mov si, offset flat:switchedResSuccessMSG
+    mov bl, 0x1f #Character attribute (White on Blue)
     call printStr
     jmp .
+
 
 
 printStr:
@@ -67,7 +72,7 @@ printLoop:
 
     int 0x10
     /*
-    I use int 0x10 again but with to write in teletext as using int 0x10 with ah = 0x9 doesn't move the cursor
+    I use int 0x10 again but with the write in teletext function as using int 0x10 with ah = 0x9 doesn't move the cursor
     */
     mov ah, 0x0e
     int 0x10
@@ -76,11 +81,25 @@ printLoop:
     jmp printLoop
 
 printEnd:
+
+    /*
+    Evberytime we exit this function, we want to print a NewLine
+    */
+    mov ah, 0x0e
+    mov al, 0x0a 
+    int 0x10
+    mov al, 0x0d
+    int 0x10
+    /*
+    Don't forget to get the values of every register back before this function was called!
+    */
     popa
     ret
 
-switchedModeMSG:
-    .asciz "Switched to 640x480 16 color graphics (VGA) mode !"
+
+switchedResSuccessMSG:
+    .asciz "Switched to 80x25 16 color text !"
+
 
 . = _start + 510 # Filling up space to match 512 bytes as the next MAGIC number must be at the 512th byte.
 .word 0xaa55 # This is the MAGIC numebr for the MBR. It must always be this value !
