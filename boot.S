@@ -47,11 +47,19 @@ _init:
     int 0x10
 
     mov si, offset flat:switchedResSuccessMSG
-    mov bl, 0x1f #Character attribute (White on Blue)
+    mov bl, 0x1f    #Character attribute (White on Blue)
     call printStr
+
+    /*
+    We are verifying the value on DL so see if it's a buggy BIOS or not 
+    */
+    cmp dl, 80
+    jb badDrive
+
+    cmp dl, 0x8f
+    ja badBoot
+
     jmp .
-
-
 
 printStr:
     pusha
@@ -86,7 +94,7 @@ printLoop:
 printEnd:
 
     /*
-    Evberytime we exit this function, we want to print a NewLine
+    Eveerytime we exit this function, we want to print a NewLine
     */
     mov ah, 0x0e
     mov al, 0x0a 
@@ -99,10 +107,30 @@ printEnd:
     popa
     ret
 
+err:
+    .h:hlt
+    jmp .h
+
+badDrive:
+    mov si, offset flat:badDriveMsg
+    mov bl, 0x4f
+    call printStr
+    jmp err
+
+badBoot:
+    mov si, offset flat:badBootMSG
+    mov bl, 0x4f
+    call printStr
+    jmp err
 
 switchedResSuccessMSG:
     .asciz "Switched to 80x25 16 color text !"
 
+badDriveMsg:
+    .asciz "Bad Drive Number given from the BIOS"
+
+badBootMSG:
+    .asciz "An error occured at the booting process! Is your image broken ?"
 
 . = _start + 510 # Filling up space to match 512 bytes as the next MAGIC number must be at the 512th byte.
 .word 0xaa55 # This is the MAGIC numebr for the MBR. It must always be this value !
