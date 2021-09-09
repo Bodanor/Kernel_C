@@ -4,7 +4,7 @@
 .intel_syntax noprefix
 
 _start:
-    jmp bpb_end # Workaround for BIOSes that require a jmp instruction at the beginning..
+    jmp bpb_end     # Workaround for BIOSes that require a jmp instruction at the beginning..
     nop 
 
     /*
@@ -44,7 +44,7 @@ _init:
     mov cl, 0xf     #End scanline (from the top to the bottom)
     int 0x10
 
-    mov si, offset flat:bootingMSG
+    mov si, offset flat:msg_booting
     mov bl, 0x02
     call printStr
 
@@ -57,9 +57,10 @@ _init:
     
 
     cmp dl, 0x8f
-    ja badBoot
+    ja badDrive
 
-    jmp .
+    mov dh, 1       # Reading one sector
+    call read_sectors
 
 printStr:
     pusha
@@ -98,6 +99,7 @@ printEnd:
     popa
     ret
 
+include "disk.S" 
 err:
     push 0xb800
     pop es
@@ -105,25 +107,18 @@ err:
     jmp .h
 
 badDrive:
-    mov si, offset flat:badDriveMsg
+    mov si, offset flat:msg_bad_drive
     mov bl, 0x4f
     call printStr
     jmp err
 
-badBoot:
-    mov si, offset flat:badBootMSG
-    mov bl, 0x4f
-    call printStr
-    jmp err
 
-bootingMSG:
+msg_booting:
     .asciz "Booting ..."
 
-badDriveMsg:
-    .asciz "Bad Drive Number given from the BIOS! Restarting in 5 seconds"
+msg_bad_drive:
+    .asciz "Bad Drive number given from the BIOS! Restarting in 5 seconds"
 
-badBootMSG:
-    .asciz "An error occured at the booting process! Restarting in 5 seconds"
 
 . = _start + 510        # Filling up space to match 512 bytes as the next MAGIC number must be at the 512th byte.
 .word 0xaa55        # This is the MAGIC numebr for the MBR. It must always be this value !

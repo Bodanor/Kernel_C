@@ -11,6 +11,19 @@ read_sectors:
     
     int 0x13
 
-    jc disk_error
+    jc disk_error   # If there is an error, the carry flag is set ( CF = 1 )
+
+    pop dx
+    cmp dh, al      # AL contains the number of sectors read. If they don't match something went bad 
+    jne disk_error
+    ret
 
 disk_error:
+    mov si, msg_disk_error
+    mob bl, 0x04    # Red on Black
+    call printStr
+    hlt     # Stop the CPU instead of wasting cycles in the void
+
+
+msg_disk_error:
+    .asiz "Disk read error !"
