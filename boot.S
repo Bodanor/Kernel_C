@@ -1,124 +1,155 @@
-.code16
-.text
-.globl _start, _init
+
 .intel_syntax noprefix
-
+.code16 # use 16 bits
+.global _start
+.global _init
+.text
 _start:
-    jmp bpb_end     # Workaround for BIOSes that require a jmp instruction at the beginning..
-    nop 
-
-    /*
-    Some BIOSes require a BPB and they tend to overwrite byte. We must AVOID that
-    or bad things will appen as he code will be overwriten... The workaround
-    is to fake a BPB by filling 80 bytes with 0's (AKA .org instruction) 
-    */
-    .org 80 
-
-bpb_end:
-    # Clearing the interrupt and direction flag
-    cli 
-    cld
-    jmp 0x0000:_init
+  .space 80, 0 # Some BIOSes need a BPB, therefore we fill up space for a fake one
+  jmp 0x0000, _init # in case BIOS set cs to 0x7c00. We work with cs:ip
 
 _init:
-    /*
-    Some BIOSes, give a value to the stack segment register by default
-    but we don't know where this is. So we better have to give a value
-    by our selfs and re-enable the interrupt flag 
-    */
 
-    xor ax, ax      # Xoring by the same register is = 0
-    mov ds, ax
-    mov es, ax
-    mov ss, ax
-    mov sp, 0x7c00
+  cld
+  mov bp, 0x9000
+  mov sp, bp
 
+  xor ax, ax
+  mov ds, ax
+  mov ss, ax
+  mov es, ax
 
+  movb [BOOT_DRIVE], dl
 
-    /*
-    Enaling the cursor with custom size just for the fun of it :)
-    */
+  mov bx, offset flat:start_16_str
+  call print
 
-    mov ah, 0x01
-    mov ch, 0xe     #Start scanline (from the top to the bottom)
-    mov cl, 0xf     #End scanline (from the top to the bottom)
-    int 0x10
+  mov bx, offset flat:read_disk_str
+  call print
 
-    mov si, offset flat:msg_booting
-    mov bl, 0x02
-    call printStr
+  mov dh, 0x1
+  mov bx, 0x7e00 # memory location to load disk to
+  call load_disk
+
+  mov bx, offset flat:read_disk_success_str
+  call print
 
 
-    /*
-    We are verifying the value on DL so see if it's a buggy BIOS or not 
-    */
-    cmp dl, 80
-    jb badDrive
-    
-
-    cmp dl, 0x8f
-    ja badDrive
-
-    mov dh, 1       # Reading one sector
-    call read_sectors
-
-printStr:
-    pusha
-
-printLoop:
-    mov al, byte ptr[si]
-    cmp al, 0
-    je printEnd
-
-    /*
-    Here I'm using ah = 0x09 because we have the choice to set character attributes (background and foreground color) when calling
-    this function (just to flex :))
-    The reason why it didn't worked before was because switching to `12  640x480 16 color graphics (VGA)` causes
-    the video address memory to change from 0xb000 to 0xa000. 640x480x16 is a graphics mode, a planar one. color text isn't
-    the same as color graphics!
-    */
-    mov ah, 0x09
-    mov bh, 0x0
-    mov cx, 0x1
+  ljmp 0x0000:0x7e00
 
 
-    int 0x10
-    /*
-    I use int 0x10 again but with the write in teletext function as using int 0x10 with ah = 0x9 doesn't move the cursor
-    */
-    mov ah, 0x0e
-    int 0x10
+.include "print_16.S"
+.include "read_disk.S"
 
-    add si, 1       # Increment till al = 0 (AKA end of the string)
-    jmp printLoop
+start_16_str:
+  .asciz "Starting in 16-bit mode"
+read_disk_str:
+  .asciz "Loading disk into memory"
 
-printEnd:
-    /*
-    Don't forget to get the values of every register back before this function was called!
-    */
-    popa
-    ret
-
-include "disk.S" 
-err:
-    push 0xb800
-    pop es
-    .h:hlt
-    jmp .h
-
-badDrive:
-    mov si, offset flat:msg_bad_drive
-    mov bl, 0x4f
-    call printStr
-    jmp err
+read_disk_success_str:
+  .asciz "Loaded disk successfully !"
 
 
-msg_booting:
-    .asciz "Booting ..."
-
-msg_bad_drive:
-    .asciz "Bad Drive number given from the BIOS! Restarting in 5 seconds"
+.set BOOT_DRIVE, 0
+.space 510-(.-_start), 0 # add zeroes to make it 510 bytes long
+.word 0xaa55 # magic bytes that tell BIOS that this is bootable
 
 
-. = _start + 510        # Filling up space to match 512 bytes as the next MAGIC number must be at the 512th byte.
-.word 0xaa55        # This is the MAGIC numebr for the MBR. It must always be this value !
+secondstage:
+  call .check_CPUID
+  mov bx, offset flat:enable_a20_gate_str
+  call print
+
+  mov ax, 0x2401
+  int 0x15
+  call switch_to_protected_mode
+
+
+.check_CPUID:
+  pusha
+
+	pushfd
+	pop eax
+	mov ecx, eax
+	xor eax, (1 << 21)
+	push eax
+	popfd
+	pushfd
+	pop eax
+	push ecx
+	popfd
+	xor eax, ecx
+	jz .no_CPUID
+
+  movb [cpuid_support], 1
+  mov bx, offset flat:cpuid_success_str
+  call print
+
+  mov eax, 0x80000000
+	cpuid
+	cmp eax, 0x80000001
+	jb .lm_error
+
+  jmp .check_lm
+
+
+.check_lm:
+  mov eax, 0x80000001 	#check if CPU supports Long Mode, abort if not
+	cpuid
+	test edx, (1 << 29)
+	jz .lm_error
+
+  movb [long_mode_support], 1
+  mov ebx, offset flat:lm_success_str
+  call print
+
+  jmp lm_end
+
+.no_CPUID:
+  movb [cpuid_support], 0
+  mov ebx, offset flat:cpuid_error_str
+  call print
+  jmp lm_end
+
+.lm_error:
+  movb [long_mode_support], 0
+  mov ebx, offset flat:lm_error_str
+  call print
+  jmp lm_end
+
+lm_end:
+  popa
+  ret
+
+lm_error_str:
+  .asciz "ERROR: CPU does not support Long Mode"
+
+lm_success_str:
+  .asciz "CHECK: CPU support Long mode "
+
+cpuid_error_str:
+  .asciz "ERROR: CPU does not support CPUID"
+
+cpuid_success_str:
+  .asciz "CHECK: CPU support CPUID"
+
+enable_a20_gate_str:
+  .asciz "WARNING: Enabling A20 gate"
+
+.code32
+BEGIN_PM:
+  mov ebx, offset flat:MSG_PROT_MODE
+  call print_string_pm
+  jmp .
+
+MSG_PROT_MODE:
+.asciz "testing string"
+
+
+.set cpuid_support, 0
+.set long_mode_support, 0
+
+.include "gdt.S"
+.include "32bit_switch.S"
+.include "32bit-print.S"
+.space 510-(.-secondstage), 0
