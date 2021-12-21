@@ -6,8 +6,8 @@ load_disk:
 
     mov ah, 0x2
     mov al, dh
-    xor ch, ch
     mov cl, 0x2
+    xor ch, ch
     xor dh, dh
 
     int 0x13

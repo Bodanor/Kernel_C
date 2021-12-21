@@ -4,6 +4,7 @@
 .global _start
 .global _init
 .text
+
 _start:
   .space 80, 0 # Some BIOSes need a BPB, therefore we fill up space for a fake one
   jmp 0x0000, _init # in case BIOS set cs to 0x7c00. We work with cs:ip
@@ -27,7 +28,7 @@ _init:
   mov bx, offset flat:read_disk_str
   call print
 
-  mov dh, 0x1
+  mov dh, 0x2
   mov bx, 0x7e00 # memory location to load disk to
   call load_disk
 
@@ -54,8 +55,8 @@ read_disk_success_str:
 .space 510-(.-_start), 0 # add zeroes to make it 510 bytes long
 .word 0xaa55 # magic bytes that tell BIOS that this is bootable
 
-
 secondstage:
+
   call .check_CPUID
   mov bx, offset flat:enable_a20_gate_str
   call print
@@ -136,20 +137,23 @@ cpuid_success_str:
 enable_a20_gate_str:
   .asciz "WARNING: Enabling A20 gate"
 
+.include "gdt.S"
+.include "32bit_switch.S"
+.include "32bit-print.S"
+
 .code32
 BEGIN_PM:
+
   mov ebx, offset flat:MSG_PROT_MODE
   call print_string_pm
-  jmp .
+  call 0x8000
+
 
 MSG_PROT_MODE:
-.asciz "testing string"
+.asciz "[SUCCESS] Giving control to the Kernel !"
 
 
 .set cpuid_support, 0
 .set long_mode_support, 0
 
-.include "gdt.S"
-.include "32bit_switch.S"
-.include "32bit-print.S"
-.space 510-(.-secondstage), 0
+.space 512-(.-secondstage), 0
