@@ -1,5 +1,5 @@
+#include "../drivers/screen.h"
+
 void main() {
-    char* video_memory = (char*) 0xb8000;
-    *video_memory = 'X';
-    while (1);
+    k_clear_screen();
 }

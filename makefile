@@ -1,4 +1,6 @@
 
+all: Kernel-0.iso
+
 Kernel-0.iso: bootloader/bootloader.bin kernel/kernel.bin
 	cat bootloader/bootloader.bin kernel/kernel.bin > $@
 
@@ -14,4 +16,5 @@ run: Kernel-0.iso
 clean:
 	(cd kernel && make clean)
 	(cd bootloader && make clean)
+	(cd drivers && make clean)
 	rm *.iso

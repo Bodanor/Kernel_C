@@ -28,7 +28,7 @@ _init:
   mov bx, offset flat:read_disk_str
   call print
 
-  mov dh, 0x2
+  mov dh, 0x3
   mov bx, 0x7e00 # memory location to load disk to
   call load_disk
 
@@ -148,6 +148,7 @@ BEGIN_PM:
   call print_string_pm
   call 0x8000
 
+  jmp . # We will never return from the call to the kernel. Only if bad thing happened...
 
 MSG_PROT_MODE:
 .asciz "[SUCCESS] Giving control to the Kernel !"
