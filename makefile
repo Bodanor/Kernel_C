@@ -11,7 +11,7 @@ kernel/kernel.bin:
 	(cd kernel && make)
 
 run: Kernel-0.iso
-	qemu-system-x86_64 -fda $^
+	qemu-system-x86_64 -boot c $^
 
 clean:
 	(cd kernel && make clean)

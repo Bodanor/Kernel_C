@@ -1,10 +1,9 @@
 #include "screen.h"
 #include "ports.h"
-enum error_types {error = 4, success = 2, warning = 14, def = 15};
 
 int get_cursor_offset();
 void set_cursor_offset(int offset);
-int print_char(char c, int col, int row, char attr);
+int k_print_char(int col, int row , const char c, int attr);
 int get_offset(int col, int row);
 int get_offset_row(int offset);
 int get_offset_col(int offset);
@@ -45,4 +44,97 @@ void k_clear_screen() {
         screen[i*2+1] = 0xf;
     }
     set_cursor_offset(get_offset(0, 0));
+}
+
+int k_print_char(int col, int row , const char c, int attr)
+{
+    unsigned char *video_memory = (unsigned char*) VIDEO_ARRAY;
+
+    int offset;
+    if (col >= 0 && row >= 0)
+        offset = get_offset(col, row);
+    else
+        offset = get_cursor_offset();
+    
+    if (c == '\n')
+    {
+        row = get_offset_row(offset);
+        offset = get_offset(0, row+1);
+    }
+    else
+    {
+        video_memory[offset] = c;
+        video_memory[offset + 1] = attr;
+        offset += 2;
+    }
+    set_cursor_offset(offset);
+    return offset;
+
+}
+
+void k_print_colour(int col, int row, const char *str, int attr)
+{
+    int offset;
+    if (col >= 0 && row >= 0)
+        offset = get_offset(col, row);
+    
+    else
+    {
+        offset = get_cursor_offset();
+        row = get_offset_row(offset);
+        col = get_offset_col(offset);
+    }
+    while (*str != '\0')
+    {
+        offset = k_print_char(col, row, *str++, attr);
+        col = get_offset_col(offset);
+        row = get_offset_row(offset);
+    }
+}
+
+void k_print(const char *str)
+{
+    k_print_colour(-1, -1, str, 0x0f);
+}
+
+void k_print_operation_status (int type, const char *str)
+{
+    k_print("[ ");
+    switch (type)
+    {
+        case error:
+            k_print_colour(-1, -1, "FAIL", type);
+            break;
+        case success:
+            k_print_colour(-1, -1, "SUCCESS", type);
+            break;
+        case warning:
+            k_print_colour(-1, -1, "WARNING", type);
+            break;
+        case info:
+            k_print_colour(-1, -1, "INFO", type);
+            break;
+
+    }
+    k_print(" ] ");
+    k_print(str);
+    k_print_char(-1,-1, '\n', def);
+}
+
+void k_print_welcome_label(const char *version, int color_version, const char *dev, int color_dev)
+{
+    k_print_char(-1, -1, '[', def);
+    k_print_char(-1, -1, ' ', color_version);
+    k_print_colour(-1, -1, version, color_version);
+    k_print_char(-1, -1, ' ', color_version);
+    k_print_char(-1, -1, ']', def);
+    k_print_char(-1, -1, ' ', def);
+
+    k_print_char(-1, -1, '[', def);
+    k_print_char(-1, -1, ' ', color_dev);
+    k_print_colour(-1, -1, dev, color_dev);
+    k_print_char(-1, -1, ' ', color_dev);
+    k_print("]\n\n");
+
+
 }
