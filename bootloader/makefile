@@ -10,5 +10,8 @@ bootloader.bin : boot.o
 boot.o : boot.S
 	$(AS) $^ -o $@
 
+debug: boot.o
+	$(LD)  -T linker.ld -o bootloader.elf $^
+
 clean:
-	rm *.o *bin
+	rm -rf *.o *bin

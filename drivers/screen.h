@@ -9,6 +9,7 @@
 #define MAX_COLS 80
 
 
+
 enum error_types {error = 4, success = 2, warning = 14, info = 1, def = 15};
 
 void k_clear_screen();
@@ -16,5 +17,6 @@ void k_print_welcome_label(const char *version, int color_version, const char *d
 void k_print_operation_status (int type, const char *str);
 void k_print(const char *str);
 void k_print_colour(int col, int row , const char *str, int attr);
+void set_background(int attr);
 
 #endif

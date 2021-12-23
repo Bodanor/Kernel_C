@@ -4,6 +4,7 @@
 .global _start
 .global _init
 .text
+.set BOOT_DRIVE, 0
 
 _start:
   .space 80, 0 # Some BIOSes need a BPB, therefore we fill up space for a fake one
@@ -12,7 +13,7 @@ _start:
 _init:
 
   cld
-  mov bp, 0x9000
+  mov bp, 0x90000
   mov sp, bp
 
   xor ax, ax
@@ -28,7 +29,8 @@ _init:
   mov bx, offset flat:read_disk_str
   call print
 
-  mov dh, 0x4
+  xor dx, dx
+  mov dh, 30
   mov bx, 0x7e00 # memory location to load disk to
   call load_disk
 
@@ -51,7 +53,6 @@ read_disk_success_str:
   .asciz "Loaded disk successfully !"
 
 
-.set BOOT_DRIVE, 0
 .space 510-(.-_start), 0 # add zeroes to make it 510 bytes long
 .word 0xaa55 # magic bytes that tell BIOS that this is bootable
 
@@ -143,7 +144,6 @@ enable_a20_gate_str:
 
 .code32
 BEGIN_PM:
-
   mov ebx, offset flat:MSG_PROT_MODE
   call print_string_pm
   call 0x8000

@@ -10,11 +10,19 @@ bootloader/bootloader.bin:
 kernel/kernel.bin:
 	(cd kernel && make)
 
-run: Kernel-0.iso
-	qemu-system-x86_64 -boot c $^
 
+run: Kernel-0.iso
+	qemu-system-i386 -fda $^
+
+debug:
+	(cd kernel && make debug)
+	(cd bootloader && make debug)
+	cat bootloader/bootloader.elf kernel/kernel.elf > os-image.elf
+	qemu-system-i386 -s -fda Kernel-0.iso & gdb -ex "target remote localhost:1234" -ex "symbol-file os-image.elf"
+	
 clean:
 	(cd kernel && make clean)
 	(cd bootloader && make clean)
 	(cd drivers && make clean)
-	rm *.iso
+	(cd cpu && make clean)
+	rm -rf *.iso

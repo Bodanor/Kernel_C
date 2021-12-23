@@ -4,11 +4,11 @@ load_disk:
     push dx
 
 
-    mov ah, 0x2
+    mov ah, 0x02
     mov al, dh
-    mov cl, 0x2
-    xor ch, ch
-    xor dh, dh
+    mov cl, 0x02
+    mov ch, 0x00
+    mov dh, 0x00
 
     int 0x13
 
@@ -16,7 +16,7 @@ load_disk:
 
     pop dx
 
-    cmp dh, al
+    cmp al, dh
     jne sectors_error
 
     popa
@@ -25,12 +25,19 @@ load_disk:
 disk_error:
     mov bx, offset flat:disk_error_str
     call print
+    mov dh, ah
+    call print_hex
+    jmp .
     hlt
     
 
 sectors_error:
+    jmp .
     mov bx, offset flat:sectors_error_str
     call print
+    mov dh, ah
+    call print_hex
+    jmp .
     hlt
 
 disk_error_str:

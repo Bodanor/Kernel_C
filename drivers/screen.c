@@ -134,7 +134,21 @@ void k_print_welcome_label(const char *version, int color_version, const char *d
     k_print_char(-1, -1, ' ', color_dev);
     k_print_colour(-1, -1, dev, color_dev);
     k_print_char(-1, -1, ' ', color_dev);
+
     k_print("]\n\n");
 
+}
 
+/*
+ *change the lsat instruction to only modify the second byte without
+ * touching the first one
+*/
+void set_background(int attr)
+{
+    unsigned char *videomemory = (unsigned char*)VIDEO_ARRAY;
+    int i;
+    for (i = 0; i < MAX_COLS* MAX_ROWS; i++)
+    {
+        *(videomemory + i *2 + 1) = (attr = attr | (1 << 4));
+    }
 }
