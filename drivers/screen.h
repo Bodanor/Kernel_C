@@ -18,5 +18,6 @@ void k_print_operation_status (int type, const char *str);
 void k_print(const char *str);
 void k_print_colour(int col, int row , const char *str, int attr);
 void set_background(int attr);
-
+void kprint_backspace();
+int k_print_char(int col, int row , const char c, int attr);
 #endif

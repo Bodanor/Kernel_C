@@ -8,12 +8,13 @@
 
 _start:
   .space 80, 0 # Some BIOSes need a BPB, therefore we fill up space for a fake one
+  mov bp, _start
   jmp 0x0000, _init # in case BIOS set cs to 0x7c00. We work with cs:ip
 
 _init:
 
   cld
-  mov bp, 0x90000
+  mov bp, _start
   mov sp, bp
 
   xor ax, ax
@@ -25,19 +26,17 @@ _init:
 
   mov bx, offset flat:start_16_str
   call print
-
   mov bx, offset flat:read_disk_str
   call print
 
-  xor dx, dx
-  mov dh, 30
+  mov dh, 31
   mov bx, 0x7e00 # memory location to load disk to
   call load_disk
 
   mov bx, offset flat:read_disk_success_str
   call print
 
-
+  
   ljmp 0x0000:0x7e00
 
 

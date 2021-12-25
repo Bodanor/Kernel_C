@@ -9,6 +9,13 @@ int get_offset_row(int offset);
 int get_offset_col(int offset);
 
 
+void kprint_backspace() {
+    int offset = get_cursor_offset()-2;
+    int row = get_offset_row(offset);
+    int col = get_offset_col(offset);
+    k_print_char( col, row, 0x08, 0x0f);
+}
+
 int get_cursor_offset() {
     /* Use the VGA ports to get the current cursor position
      * 1. Ask for high byte of the cursor offset (data 14)
@@ -60,6 +67,10 @@ int k_print_char(int col, int row , const char c, int attr)
     {
         row = get_offset_row(offset);
         offset = get_offset(0, row+1);
+    }
+    else if (c == 0x08) { /* Backspace */
+        video_memory[offset] = ' ';
+        video_memory[offset+1] = attr;
     }
     else
     {

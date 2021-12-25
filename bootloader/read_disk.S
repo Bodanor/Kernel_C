@@ -25,19 +25,12 @@ load_disk:
 disk_error:
     mov bx, offset flat:disk_error_str
     call print
-    mov dh, ah
-    call print_hex
-    jmp .
     hlt
     
 
 sectors_error:
-    jmp .
     mov bx, offset flat:sectors_error_str
     call print
-    mov dh, ah
-    call print_hex
-    jmp .
     hlt
 
 disk_error_str:

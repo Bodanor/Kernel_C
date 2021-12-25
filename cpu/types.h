@@ -14,4 +14,3 @@ typedef          char  s8;
 #define high_16(address) (u16)(((address) >> 16) & 0xFFFF)
 
 #endif
-

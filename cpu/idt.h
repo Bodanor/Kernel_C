@@ -5,6 +5,7 @@
 
 /* Segment selectors */
 #define KERNEL_CS 0x08
+#define IDT_ENTRIES 256
 
 /* How every interrupt gate (handler) is defined */
 typedef struct {
@@ -27,11 +28,10 @@ typedef struct {
     u32 base;
 } __attribute__((packed)) idt_register_t;
 
-#define IDT_ENTRIES 256
-
 
 /* Functions implemented in idt.c */
 void set_idt_gate(int n, u32 handler);
 void set_idt();
 
 #endif
+
