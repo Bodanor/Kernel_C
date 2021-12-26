@@ -29,7 +29,7 @@ _init:
   mov bx, offset flat:read_disk_str
   call print
 
-  mov dh, 31
+  mov dh, 32
   mov bx, 0x7e00 # memory location to load disk to
   call load_disk
 

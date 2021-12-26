@@ -10,7 +10,7 @@ AS = /usr/local/i386elfgcc/bin/i386-elf-as
 LDFLAGS = --oformat binary
 CCFLAGS = -ffreestanding
 
-kernel.bin: kernel_entry.o kernel.o $(OBJ) ../cpu/interrupt.o
+kernel.bin: kernel_entry.o kernel.o $(OBJ) ../cpu/interrupt.o shell.o
 	$(LD) $(LDFLAGS) -T linker.ld -o $@ $^
 
 kernel.o: kernel.c
@@ -19,6 +19,9 @@ kernel.o: kernel.c
 util.o: util.c
 	$(CC) $(CCFLAGS) -c $^ -o $@
 
+shell.o: shell.c
+	$(CC) $(CCFLAGS) -c $^ -o $@
+	
 kernel_entry.o: kernel_entry.S
 	$(AS) $^ -o $@
 
