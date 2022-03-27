@@ -1,5 +1,9 @@
 .code16
 .intel_syntax noprefix
+
+/*
+    Describe to whole GDT Table for 32 bit protected mode
+*/
 gdt_start:
     .quad 0
 gdt_code:
@@ -24,5 +28,5 @@ gdt_descriptor:
     .word gdt_end -gdt_start -1
     .long offset flat:gdt_start
 
-.set CODE_SEG, gdt_code - gdt_start
-.set DATA_SEG, gdt_data - gdt_start
+.equ CODE_SEG, gdt_code - gdt_start
+.equ DATA_SEG, gdt_data - gdt_start

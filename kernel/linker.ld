@@ -2,10 +2,7 @@ ENTRY(main)
 
 SECTIONS
 {
-	. = 0x8000;
-
-    .text : {
-        KEEP(*(.text*))
-    }
+    . = 0x9200;
+    .text : { *(.text) }
 
 }

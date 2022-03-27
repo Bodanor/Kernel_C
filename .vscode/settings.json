@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "kernel.C": "cpp",
-        "idt.h": "c",
-        "screen.h": "c",
-        "string.h": "c"
-    }
-}
