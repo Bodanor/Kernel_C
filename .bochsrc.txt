@@ -1,7 +1,8 @@
 romimage:    file=/usr/share/bochs/BIOS-bochs-latest
 vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest
-floppya:     1_44=bootloader.bin, status=inserted
-boot:        floppy
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata0-master: type=disk, mode=flat, biosdetect=auto, path=bootloader.bin
+boot: disk
 log:         zygomatic.log
 error:       action=report
 info:        action=report

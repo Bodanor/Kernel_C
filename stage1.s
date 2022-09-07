@@ -34,7 +34,13 @@ _init:
     /* End of initilization */
     
     mov byte ptr[BOOT_DISK], dl
-    
+   
+    /* Change to 640x200 4 color graphics (PCjr)
+    mov ah, 0x0
+    mov al, 0x0A
+    int 0x10
+    */
+
     mov si, offset flat:init_msg
     call print_16
     
@@ -67,10 +73,10 @@ _init:
     mov cl, 2
     mov dh, 0
     mov dl, byte ptr[BOOT_DISK]
-    mov bx, 0x9000
+    mov bx, 0x8000
     int 0x13
     jc stage2_failed
-    jmp 0x9000
+    jmp 0x8000
     
 stage2_failed:
     mov si, offset flat:stage2_failed_msg
@@ -84,7 +90,7 @@ stack_address_msg:
     .asciz "Stack set at : "
 
 disk_id_msg:
-    .asciz "Disk id is : "
+    .asciz "Disk ID is : "
     
 loading_stage2_msg:
     .asciz "Loading Stage2...\n"
@@ -98,5 +104,6 @@ stage2_loaded_msg:
 newline_str:
     .asciz "\n"
 
+.global BOOT_DISK
 BOOT_DISK:
     .int 0
