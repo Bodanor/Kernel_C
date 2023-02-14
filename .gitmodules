@@ -1,0 +1,3 @@
+[submodule "bootloader-mbr"]
+	path = bootloader-mbr
+	url = https://github.com/bodanor/bootloader-mbr
