@@ -1,0 +1,34 @@
+[
+  {
+    "arguments": [
+      "/usr/local/i386elfgcc/bin/i386-elf-gcc",
+      "-ffreestanding",
+      "-c",
+      "main.c",
+      "-o",
+      "main.o",
+      "-I",
+      "../kernel",
+      "-I",
+      "../drivers",
+      "-I",
+      "../drivers/vga"
+    ],
+    "directory": "/home/liwinux/Desktop/kernel_c/kernel",
+    "file": "/home/liwinux/Desktop/kernel_c/kernel/main.c",
+    "output": "/home/liwinux/Desktop/kernel_c/kernel/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/local/i386elfgcc/bin/i386-elf-gcc",
+      "-ffreestanding",
+      "-c",
+      "screen.c",
+      "-o",
+      "screen.o"
+    ],
+    "directory": "/home/liwinux/Desktop/kernel_c/drivers/vga",
+    "file": "/home/liwinux/Desktop/kernel_c/drivers/vga/screen.c",
+    "output": "/home/liwinux/Desktop/kernel_c/drivers/vga/screen.o"
+  }
+]
