@@ -8,11 +8,13 @@
       "-o",
       "main.o",
       "-I",
-      "../kernel",
+      "/home/liwinux/Desktop/kernel_c/kernel",
       "-I",
-      "../drivers",
+      "/home/liwinux/Desktop/kernel_c/drivers",
       "-I",
-      "../drivers/vga"
+      "/home/liwinux/Desktop/kernel_c/drivers/vga",
+      "-I",
+      "/home/liwinux/Desktop/kernel_c/cpu"
     ],
     "directory": "/home/liwinux/Desktop/kernel_c/kernel",
     "file": "/home/liwinux/Desktop/kernel_c/kernel/main.c",
@@ -23,9 +25,30 @@
       "/usr/local/i386elfgcc/bin/i386-elf-gcc",
       "-ffreestanding",
       "-c",
+      "ports.c",
+      "-o",
+      "ports.o"
+    ],
+    "directory": "/home/liwinux/Desktop/kernel_c/cpu",
+    "file": "/home/liwinux/Desktop/kernel_c/cpu/ports.c",
+    "output": "/home/liwinux/Desktop/kernel_c/cpu/ports.o"
+  },
+  {
+    "arguments": [
+      "/usr/local/i386elfgcc/bin/i386-elf-gcc",
+      "-ffreestanding",
+      "-c",
       "screen.c",
       "-o",
-      "screen.o"
+      "screen.o",
+      "-I",
+      "/home/liwinux/Desktop/kernel_c/kernel",
+      "-I",
+      "/home/liwinux/Desktop/kernel_c/drivers",
+      "-I",
+      "/home/liwinux/Desktop/kernel_c/drivers/vga",
+      "-I",
+      "/home/liwinux/Desktop/kernel_c/cpu"
     ],
     "directory": "/home/liwinux/Desktop/kernel_c/drivers/vga",
     "file": "/home/liwinux/Desktop/kernel_c/drivers/vga/screen.c",

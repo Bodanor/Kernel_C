@@ -12,8 +12,7 @@ all:$(C_OBJECTS)
 
 %.o:%.c
 	$(info Building : $<)
-	$(CC) $(CCFLAGS) -c $< -MD -MP -MF ${@:.o=.d} -o $@ $(addprefix -I , $(SUBDIRINCLUDE))
-
+	$(CC) $(CCFLAGS) -c $< -MD -MP -MF ${@:.o=.d} -o $@
 -include $(DEP)
 
 clean:

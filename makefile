@@ -1,4 +1,6 @@
-SUBDIRSKERNEL := kernel drivers
+MAKEDIR := $(shell pwd)
+
+SUBDIRSKERNEL := $(MAKEDIR)/kernel $(MAKEDIR)/drivers $(MAKEDIR)/cpu
 SUBDIRBOOTLOADER := bootloader-mbr
 
 
@@ -42,5 +44,6 @@ clean:
 	@$(MAKE) -C bootloader-mbr clean
 	@$(MAKE) -C kernel clean
 	@$(MAKE) -C drivers clean
+	@$(MAKE) -C cpu clean
 	rm -rf KERNEL.BIN
 	rm -rf IMG/*
