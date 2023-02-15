@@ -1,0 +1,4 @@
+void vga_test()
+{
+
+}

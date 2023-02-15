@@ -1,6 +1,7 @@
 CC = i386-elf-gcc
 LD = i386-elf-ld
 
+
 LDFLAGS = --oformat binary
 CCFLAGS = -ffreestanding
 
@@ -12,7 +13,7 @@ all:$(C_OBJECTS)
 
 %.o:%.c
 	$(info Building : $<)
-	$(CC) $(CCFLAGS) -c $< -MD -MP -MF ${@:.o=.d} -o $@
+	$(CC) $(CCFLAGS) -c $< -MD -MP -MF ${@:.o=.d} -o $@ $(addprefix -I ../, $(SUBDIRINCLUDE))
 -include $(DEP)
 
 clean:

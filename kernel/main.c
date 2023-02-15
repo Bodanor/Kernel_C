@@ -1,5 +1,7 @@
+#include "screen.h"
+
 void main()
 {
-	while (1);
+	vga_test();
 
 }
