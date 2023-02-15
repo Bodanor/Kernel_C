@@ -1,7 +1,8 @@
-SUBDIRSKERNEL := kernel
+SUBDIRSKERNEL := kernel drivers
 SUBDIRBOOTLOADER := bootloader-mbr
 
-C_SOURCES := $(wildcard $(SUBDIRSKERNEL)/*.c)
+C_SOURCES := $(shell find $(SUBDIRSKERNEL) -name '*.c')
+$(info $(C_SOURCES))
 C_OBJECTS := $(C_SOURCES:.c=.o)
 
 IMGDIR = IMG
@@ -37,5 +38,6 @@ image:
 clean:
 	@$(MAKE) -C bootloader-mbr clean
 	@$(MAKE) -C kernel clean
+	@$(MAKE) -C drivers clean
 	rm -rf KERNEL.BIN
 	rm -rf IMG/*
