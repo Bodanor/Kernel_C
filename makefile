@@ -1,13 +1,16 @@
 SUBDIRSKERNEL := kernel drivers
 SUBDIRBOOTLOADER := bootloader-mbr
 
+
+SUBDIRINCLUDE := $(shell find $(SUBDIRSKERNEL) -type d )
 C_SOURCES := $(shell find $(SUBDIRSKERNEL) -name '*.c')
-$(info $(C_SOURCES))
 C_OBJECTS := $(C_SOURCES:.c=.o)
 
 IMGDIR = IMG
 LD = i386-elf-ld
 LDFLAGS = --oformat binary -T linker.ld
+
+export SUBDIRINCLUDE
 
 all: $(SUBDIRBOOTLOADER) $(SUBDIRSKERNEL) KERNEL.BIN
 
