@@ -1,4 +1,5 @@
 ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+romimage: file="/usr/share/bochs/BIOS-bochs-legacy", options=fastboot
 ata0-master: type=disk, mode=flat, biosdetect=auto, path=IMG/hdd.img
 boot: disk
 log:         zygomatic.log
