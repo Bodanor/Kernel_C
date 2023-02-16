@@ -29,10 +29,16 @@
 /* Define usefull I/O ports */
 #define CURSOR_HIGH_BYTE 14
 #define CURSOR_LOW_BYTE 15
-#define CRTC_VGA_REGISTER 0x3D4
+#define CRTC_VGA_REGISTER_CTRL 0x3D4
+#define CRTC_VGA_REGISTER_DATA 0x3D5
 
+#define SUCCESS 0
+#define WARNING 1
+#define FAILURE 2
+
+void k_print_init(void);
 void k_print_string(uint8_t background, uint8_t foreground, const uint8_t *string);
-void k_print_chr(uint8_t background, uint8_t forefround, const uint8_t *chr);
+void k_print_chr(uint8_t background, uint8_t forefround, const uint8_t chr);
 void set_cursor(uint8_t x, uint8_t y);
-
+void k_print_log(uint8_t log_type, const uint8_t *string);
 #endif
