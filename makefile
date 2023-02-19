@@ -8,6 +8,9 @@ SUBDIRINCLUDE := $(shell find $(SUBDIRSKERNEL) -type d )
 C_SOURCES := $(shell find $(SUBDIRSKERNEL) -name '*.c')
 C_OBJECTS := $(C_SOURCES:.c=.o)
 
+AS_SOURCES :=$(shell find $(SUBDIRSKERNEL) -name '*.s')
+AS_OBJETCS := $(AS_SOURCES:.s=.o)
+
 IMGDIR = IMG
 LD = i386-elf-ld
 LDFLAGS = --oformat binary -T linker.ld
@@ -22,8 +25,8 @@ $(SUBDIRSKERNEL):
 $(SUBDIRBOOTLOADER):
 	@$(MAKE) -C $@
 
-KERNEL.BIN: $(C_OBJECTS)
-	$(LD) $(LDFLAGS) -o $@ $(C_OBJECTS)
+KERNEL.BIN: $(C_OBJECTS) $(AS_OBJETCS)
+	$(LD) $(LDFLAGS) -o $@ $(C_OBJECTS) $(AS_OBJETCS)
 
 image:
 	mkdir -p $(IMGDIR)
