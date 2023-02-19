@@ -36,9 +36,7 @@
 #define WARNING 1
 #define FAILURE 2
 
-void k_print_init(void);
-void k_print_string(uint8_t background, uint8_t foreground, const uint8_t *string);
-void k_print_chr(uint8_t background, uint8_t forefround, const uint8_t chr);
-void set_cursor(uint8_t x, uint8_t y);
-void k_print_log(uint8_t log_type, const uint8_t *string);
+void k_print_string(uint8_t background, uint8_t foreground, const char *string, uint8_t x, uint8_t y);
+void k_print_chr(uint8_t background, uint8_t forefround, const char chr, uint8_t x, uint8_t y);
+void k_print_log(uint8_t log_type, const char *string);
 #endif
