@@ -7,11 +7,11 @@
 
 void main()
 {
-	k_print_string(BLACK, WHITE, "Welcome to the Kernel", 0, 0);
-	//k_print_string(BLACK, WHITE, "TEST", -1, -1);
-	//k_print_log(SUCCESS,"Booting succeded\n");
+	vga_init();
+	k_print_string(BLACK, WHITE, "Welcome to the Kernel\n", -1, -1);
+	k_print_log(SUCCESS,"Booting succeded\n");
 	isr_install();
-	//k_print_log(SUCCESS, "ISR installed");
+	k_print_log(SUCCESS, "ISR installed\n");
 	__asm__("int $2");
 	while (1);	
 }

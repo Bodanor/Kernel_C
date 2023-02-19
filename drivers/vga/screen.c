@@ -2,7 +2,7 @@
 #include "ports.h"
 #include <stdint.h>
 
-volatile static uint8_t *video_mem = (volatile uint8_t *)VIDEO_ADDRESS;
+volatile static uint8_t *video_mem;
 
 static void set_cursor(uint16_t offset);
 static uint16_t get_cursor(void);
@@ -10,6 +10,10 @@ static uint16_t coordToOffset(uint8_t x, uint16_t y);
 static uint8_t offsetToRow(uint16_t offset);
 static uint8_t offsetToCol(uint16_t offset);
 
+void vga_init(void)
+{
+	video_mem = (volatile uint8_t *)VIDEO_ADDRESS;
+}
 
 void set_cursor(uint16_t offset)
 {
@@ -91,7 +95,9 @@ void k_print_chr(uint8_t background, uint8_t forefround, const char chr, uint8_t
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0xf0) | forefround;
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0x0f) | (background << 4);
 		
+	offset+= 2;
 	}
+
 	set_cursor(offset);
 }
 
