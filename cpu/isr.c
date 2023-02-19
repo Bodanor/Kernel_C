@@ -80,7 +80,7 @@ char *exception_messages[] = {
 };
 
 void isr_handler(registers *r) {
-  	k_print_string(BLACK, WHITE, "Received interrupt : ");
+  	k_print_log(WARNING, "Received interrupt : ");
 }
 
 void register_int_handler(uint8_t n, isr_t handler) {

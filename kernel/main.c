@@ -12,5 +12,6 @@ void main()
 	k_print_log(SUCCESS,(uint8_t*)"Booting succeded\n");
 	isr_install();
 	k_print_log(SUCCESS, (uint8_t*)"ISR installed\n");
+	__asm__("int $2");
 	while (1);	
 }
