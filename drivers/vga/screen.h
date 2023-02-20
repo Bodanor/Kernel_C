@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "ports.h"
+#include "stdlib.h"
 
 #define VIDEO_ADDRESS 0xb8000
 #define MAX_ROWS 25

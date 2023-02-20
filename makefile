@@ -1,6 +1,6 @@
 MAKEDIR := $(shell pwd)
 
-SUBDIRSKERNEL := $(MAKEDIR)/kernel $(MAKEDIR)/drivers $(MAKEDIR)/cpu
+SUBDIRSKERNEL := $(MAKEDIR)/kernel $(MAKEDIR)/drivers $(MAKEDIR)/cpu $(MAKEDIR)/libc
 SUBDIRBOOTLOADER := bootloader-mbr
 
 

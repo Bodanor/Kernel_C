@@ -66,6 +66,7 @@ void k_print_string(uint8_t background, uint8_t foreground, const char *string, 
 void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t x, int8_t y)
 {
 	int offset;
+	int i;
 
 	if (x >= 0 && y >= 0 && x <= MAX_COLS && y <= MAX_ROWS){
 		offset = coordToOffset(x, y);
@@ -82,9 +83,19 @@ void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t 
 		*(video_mem+ offset) = chr;	
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0xf0) | forefround;
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0x0f) | (background << 4);
-	offset+= 2;
+		offset+= 2;
 	}
 	
+	if (offset >= MAX_ROWS*MAX_COLS *2) {
+		for (i = 1; i < MAX_ROWS; i++)
+			memcpy((void*)video_mem + coordToOffset(0, i), (void*)video_mem + coordToOffset(0, i-1), MAX_COLS * 2);
+
+		for (i = 0; i < MAX_COLS * 2; i++)
+			((char*)(video_mem + coordToOffset(0, MAX_ROWS-1)))[i] = 0;
+		offset -= 2 * MAX_COLS;
+
+	}
+
 	curr_x = offsetToCol(offset);
 	curr_y = offsetToRow(offset);
 	set_cursor(offset);
