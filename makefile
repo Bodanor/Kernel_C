@@ -48,5 +48,6 @@ clean:
 	@$(MAKE) -C kernel clean
 	@$(MAKE) -C drivers clean
 	@$(MAKE) -C cpu clean
+	@$(MAKE) -C libc clean
 	rm -rf KERNEL.BIN
 	rm -rf IMG/*
