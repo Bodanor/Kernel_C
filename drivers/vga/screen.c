@@ -2,18 +2,14 @@
 #include "ports.h"
 #include <stdint.h>
 
-volatile static uint8_t *video_mem;
+volatile static uint8_t *video_mem = (volatile uint8_t*)VIDEO_ADDRESS;
+volatile static uint8_t curr_x, curr_y;
 
 static void set_cursor(uint16_t offset);
-static uint16_t get_cursor(void);
 static uint16_t coordToOffset(uint8_t x, uint16_t y); 
 static uint8_t offsetToRow(uint16_t offset);
 static uint8_t offsetToCol(uint16_t offset);
 
-void vga_init(void)
-{
-	video_mem = (volatile uint8_t *)VIDEO_ADDRESS;
-}
 
 void set_cursor(uint16_t offset)
 {
@@ -26,17 +22,6 @@ void set_cursor(uint16_t offset)
 
 }
 
-uint16_t get_cursor(void)
-{
-	int offset;
-
-	port_byte_out(CRTC_VGA_REGISTER_CTRL, CURSOR_HIGH_BYTE);
-    offset = port_byte_in(CRTC_VGA_REGISTER_DATA) << 8;
-    port_byte_out(CRTC_VGA_REGISTER_CTRL, CURSOR_LOW_BYTE);
-    offset += port_byte_in(CRTC_VGA_REGISTER_DATA);
-
-    return offset * 2;
-}
 static uint8_t offsetToRow(uint16_t offset)
 {
 	return offset / (2 * MAX_COLS);
@@ -57,47 +42,51 @@ uint16_t coordToOffset(uint8_t x, uint16_t y)
 
 }
 
-void k_print_string(uint8_t background, uint8_t foreground, const char *string, uint8_t x, uint8_t y)
+void k_print_string(uint8_t background, uint8_t foreground, const char *string, int8_t x, int8_t y)
 {
 	int offset;
 
-	if (x >= 0 && y >= 0) {
+	if (x >= 0 && y >= 0 && x <= MAX_COLS && y <= MAX_ROWS) {
 		offset = coordToOffset(x, y);
-	}
-	else {
-		offset = get_cursor();
-		y = offsetToRow(offset);
-		x = offsetToCol(offset);
+		curr_y = offsetToRow(offset);
+		curr_x = offsetToCol(offset);
 	}
 
 	while (*string != '\0') {
-		k_print_chr(background, foreground, *string++, x , y);
-		offset = get_cursor();
-		x = offsetToCol(offset);
-		y = offsetToRow(offset);
+		k_print_chr(background, foreground, *string++, curr_x , curr_y);
+		offset = coordToOffset(curr_x, curr_y);
+		curr_x = offsetToCol(offset);
+		curr_y = offsetToRow(offset);
 	}
 
 }
 
-void k_print_chr(uint8_t background, uint8_t forefround, const char chr, uint8_t x, uint8_t y)
+
+
+void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t x, int8_t y)
 {
 	int offset;
 
-	if (x >= 0 && y >= 0 && x <= MAX_COLS && y <= MAX_ROWS)
+	if (x >= 0 && y >= 0 && x <= MAX_COLS && y <= MAX_ROWS){
 		offset = coordToOffset(x, y);
+		curr_x = x;
+		curr_y = y;
+	}
+
 	else
-		offset = get_cursor();
+		offset = coordToOffset(curr_x, curr_y);
 
 	if (chr == '\n')
-		offset = coordToOffset(0, y+1);
+		offset = coordToOffset(0, ++curr_y);
 	else {
 		*(video_mem+ offset) = chr;	
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0xf0) | forefround;
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0x0f) | (background << 4);
-		
 	offset+= 2;
 	}
-
+	
+	curr_x = offsetToCol(offset);
+	curr_y = offsetToRow(offset);
 	set_cursor(offset);
 }
 

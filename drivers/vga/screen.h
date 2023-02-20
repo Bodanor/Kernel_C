@@ -36,9 +36,8 @@
 #define WARNING 1
 #define FAILURE 2
 
-void k_print_string(uint8_t background, uint8_t foreground, const char *string, uint8_t x, uint8_t y);
-void k_print_chr(uint8_t background, uint8_t forefround, const char chr, uint8_t x, uint8_t y);
+void k_print_string(uint8_t background, uint8_t foreground, const char *string, int8_t x, int8_t y);
+void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t x, int8_t y);
 void k_print_log(uint8_t log_type, const char *string);
 
-void vga_init(void);
 #endif

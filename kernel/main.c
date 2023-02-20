@@ -7,7 +7,6 @@
 
 void main()
 {
-	vga_init();
 	k_print_string(BLACK, WHITE, "Welcome to the Kernel\n", -1, -1);
 	k_print_log(SUCCESS,"Booting succeded\n");
 	isr_install();
