@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "idt.h"
 #include "screen.h"
+#include "string.h"
 
 extern void isr0();
 extern void isr1();

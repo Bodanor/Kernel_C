@@ -1,4 +1,26 @@
 #include "isr.h"
+#include "screen.h"
+#include "string.h"
+
+
+struct registers_t {
+	uint32_t ds;
+	uint32_t edi;
+	uint32_t esi;
+	uint32_t ebp;
+	uint32_t useless;
+	uint32_t ebx;
+	uint32_t edx;
+	uint32_t ecx;
+	uint32_t eax;
+	uint32_t int_no;
+	uint32_t err_code;
+	uint32_t eip;
+	uint32_t cs;
+	uint32_t eflags;
+	uint32_t esp;
+	uint32_t ss;
+};
 
 static isr_t interrupt_handlers[256];
 
@@ -81,7 +103,10 @@ char *exception_messages[] = {
 };
 
 void isr_handler(registers *r) {
+	char tmp[3];
   	k_print_log(WARNING, "Received interrupt : ");
+	itoa(r->int_no, tmp);
+	k_print_string(BLACK, WHITE, tmp, -1, -1);
 }
 
 void register_int_handler(uint8_t n, isr_t handler) {
