@@ -39,6 +39,7 @@ void isr_install()
     set_idt_gate(31, (uint32_t)isr31);
 
 	set_idt_cpu();
+	k_print_log(SUCCESS, "ISR installed\n");
 }
 
 char *exception_messages[] = {
