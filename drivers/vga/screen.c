@@ -151,7 +151,7 @@ void k_printf(char *format, ...)
 						k_print_string(BLACK, YELLOW, "WARNING", -1, -1);
 						break;
 				}
-				k_print_string(BLACK, WHITE, "] ", -1, -1);
+				k_print_chr(BLACK, WHITE, ']', -1, -1);
 				traverse+=2;
 			}
 			else {
