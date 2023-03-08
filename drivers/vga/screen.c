@@ -1,6 +1,5 @@
 #include "screen.h"
 #include "ports.h"
-#include <stdint.h>
 
 volatile static uint8_t *video_mem = (volatile uint8_t*)VIDEO_ADDRESS;
 volatile static uint8_t curr_x, curr_y;
@@ -10,7 +9,7 @@ static uint16_t coordToOffset(uint8_t x, uint16_t y);
 static uint8_t offsetToRow(uint16_t offset);
 static uint8_t offsetToCol(uint16_t offset);
 
-
+static char* convert(unsigned int, int);
 void set_cursor(uint16_t offset)
 {
 	offset /= 2;
@@ -106,29 +105,6 @@ void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t 
 	set_cursor(offset);
 }
 
-
-void k_print_log(uint8_t log_type, const char *string)
-{
-	k_print_chr(BLACK, WHITE, '[', -1, -1);
-	
-	switch (log_type) {
-		case SUCCESS:
-			k_print_string(BLACK, GREEN, "SUCCESS", -1, -1);
-			break;
-		case WARNING:
-			k_print_string(BLACK, YELLOW, "WARNING", -1, -1);
-			break;
-		case FAILURE:
-			k_print_string(BLACK, RED, "FAILED", -1, -1);
-			break;
-		default:
-			break;
-	}
-	k_print_string(BLACK, WHITE, "] ", -1, -1);
-	k_print_string(BLACK, WHITE, string, -1, -1);
-
-}
-
 void k_print_backspace(void)
 {
 	int offset = coordToOffset(curr_x, curr_y) - 2;
@@ -143,4 +119,96 @@ void k_print_clear_screen(void)
 	for (i = 0; i < MAX_COLS *MAX_ROWS*2; i+=2){
 		*(video_mem + i) = ' ';
 	}
+}
+
+#define DEBUG __asm__("xchgw %bx, %bx")
+void k_printf(char *format, ...)
+{
+	char *traverse;
+	uint64_t i;
+
+	char *s;
+
+	va_list arg;
+	va_start(arg, format);
+	for (traverse = format; *traverse != '\0'; traverse++) {
+		while (*traverse != '%') {
+			if (*traverse == '\0')
+				return;
+			if (*traverse == '<' && *(traverse + 2) == '>') {
+				k_print_chr(BLACK, WHITE, '[', -1, -1);
+
+				traverse++;
+
+				switch (*traverse) {
+					case '0':
+						k_print_string(BLACK, GREEN, "SUCCESS", -1, -1);
+						break;
+					case '1':
+						k_print_string(BLACK, RED, "FAILED", -1, -1);
+						break;
+					case '2':
+						k_print_string(BLACK, YELLOW, "WARNING", -1, -1);
+						break;
+				}
+				k_print_string(BLACK, WHITE, "] ", -1, -1);
+				traverse+=2;
+			}
+			else {
+				k_print_chr(BLACK, WHITE, *traverse, -1, -1);
+				traverse++;
+			}
+		}
+		traverse++;
+
+		switch(*traverse) {
+			case 'c' :
+				i = va_arg(arg, int);
+				k_print_chr(BLACK, WHITE, i, -1, -1);
+				break;
+			
+			case 'd':
+				i = va_arg(arg, int);
+				if (i < 0){
+					i = -i;
+					k_print_chr(BLACK, WHITE, '-', -1, -1);
+				}
+				k_print_string(BLACK, WHITE, convert(i, 10), -1, -1);
+				break;
+			case 's':
+				s = va_arg(arg, char*);
+				k_print_string(BLACK, WHITE, s, -1, -1);
+				break;
+
+			case 'x':
+				i = va_arg(arg, unsigned int);
+				k_print_string(BLACK, WHITE, convert(i, 16), -1, -1);
+				break;
+		}
+	}
+	va_end(arg);
+	
+
+}
+
+char *convert(unsigned int num, int base)
+{
+    static char Representation[]= "0123456789ABCDEF";
+    static char buffer[50];
+    char *ptr;
+
+    ptr = &buffer[49];
+    *ptr = '\0';
+    do
+    {
+        *--ptr = Representation[num%base];
+        num /= base;
+    }while(num != 0);
+
+	if (base == 16) {
+		*--ptr = 'x';
+		*--ptr = '0';
+	}
+
+    return(ptr);
 }
