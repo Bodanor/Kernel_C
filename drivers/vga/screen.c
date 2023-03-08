@@ -79,7 +79,7 @@ void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t 
 
 	if (chr == '\n')
 		offset = coordToOffset(0, ++curr_y);
-	if (chr == 0x08) {
+	else if (chr == 0x08) {
 		*(video_mem + offset) = ' ';
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0xf0) | forefround;
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0x0f) | (background << 4);
@@ -107,7 +107,6 @@ void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t 
 }
 
 
-#define DEBUG __asm__("xchgw %bx, %bx")
 void k_print_log(uint8_t log_type, const char *string)
 {
 	k_print_chr(BLACK, WHITE, '[', -1, -1);
