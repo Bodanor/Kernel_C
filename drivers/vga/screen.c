@@ -79,6 +79,11 @@ void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t 
 
 	if (chr == '\n')
 		offset = coordToOffset(0, ++curr_y);
+	if (chr == 0x08) {
+		*(video_mem + offset) = ' ';
+		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0xf0) | forefround;
+		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0x0f) | (background << 4);
+	}
 	else {
 		*(video_mem+ offset) = chr;	
 		*(video_mem+ offset + 1) = (*(video_mem + offset + 1) & 0xf0) | forefround;
@@ -102,6 +107,7 @@ void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t 
 }
 
 
+#define DEBUG __asm__("xchgw %bx, %bx")
 void k_print_log(uint8_t log_type, const char *string)
 {
 	k_print_chr(BLACK, WHITE, '[', -1, -1);
@@ -122,4 +128,10 @@ void k_print_log(uint8_t log_type, const char *string)
 	k_print_string(BLACK, WHITE, "] ", -1, -1);
 	k_print_string(BLACK, WHITE, string, -1, -1);
 
+}
+
+void k_print_backspace(void)
+{
+	int offset = coordToOffset(curr_x, curr_y) - 2;
+	k_print_chr(BLACK, WHITE, 0x08, offsetToCol(offset), offsetToRow(offset));
 }
