@@ -22,3 +22,11 @@ void init_timer(uint32_t freq)
 	port_byte_out(0x40, low);
 	port_byte_out(0x40, high);
 }
+
+void wait_timer(int ticks)
+{
+	int start = tick;
+	while (tick < start + ticks)
+		;
+
+}

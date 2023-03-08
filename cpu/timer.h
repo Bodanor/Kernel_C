@@ -4,5 +4,5 @@
 #include <stdint.h>
 
 void init_timer(uint32_t freq);
-
+void wait_timer(int ticks);
 #endif
