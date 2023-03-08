@@ -17,6 +17,6 @@ struct rtc_t {
 
 typedef struct rtc_t rtc;
 
-void read_rtc(void);
+void read_rtc(rtc *current_rtc);
 #endif
 

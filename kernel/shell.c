@@ -1,12 +1,18 @@
 #include "shell.h"
+#include "rtc.h"
 #include "screen.h"
+#include <stdint.h>
 
 #define DEBUG __asm__("xchgw %bx, %bx")
+
+extern rtc boot_rtc_time;
+
 static char user_input[USER_MAX_INPUT];
 
 static void shell_prompt(void);
 static void shell_input(void);
 
+static void uptime_command(void);
 void init_shell()
 {
 	set_keymap(BE_KEYMAP);
@@ -32,6 +38,9 @@ void shell_loop()
 			}
 			else if (strcmp(user_input, "CLEAR") == 0){
 				k_print_clear_screen();
+			}
+			else if (strcmp(user_input, "UPTIME") == 0) {
+				uptime_command();
 			}
 			else{
 				k_print_string(BLACK, RED, "Command not found !\n", -1, -1);
@@ -68,3 +77,14 @@ void shell_input(void)
 	*user_input_pt++ = '\0';
 	k_print_chr(BLACK, WHITE, '\n', -1,-1);
 }
+
+void uptime_command(void)
+{
+	rtc current_rtc_time;
+	rtc uptime_rtc;
+	read_rtc(&uptime_rtc);
+	
+	k_printf("Uptime since boot: %d years, %d months, %d days, %d hours, %d minutes, %d seconds\n", uptime_rtc.year, uptime_rtc.month, uptime_rtc.day, uptime_rtc.hour, uptime_rtc.minute, uptime_rtc.second);
+
+}
+

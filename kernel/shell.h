@@ -7,6 +7,7 @@
 #include "string.h"
 #include "pcspeaker.h"
 #include "timer.h"
+#include "rtc.h"
 
 #define USER_MAX_INPUT 256
 
