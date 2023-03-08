@@ -33,6 +33,23 @@
 	.global isr29
 	.global isr30
 	.global isr31
+	
+	.global irq0
+	.global irq1
+	.global irq2
+	.global irq3
+	.global irq4
+	.global irq5
+	.global irq6
+	.global irq7
+	.global irq8
+	.global irq9
+	.global irq10
+	.global irq11
+	.global irq12
+	.global irq13
+	.global irq14
+	.global irq15
 
 isr_common_stub:
 	pusha
@@ -56,7 +73,27 @@ isr_common_stub:
 	popa
 	add esp, 8
 	iret
-
+irq_common_stub:
+	pusha 
+    mov ax, ds
+    push eax
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    push esp
+    cld
+    call irq_handler
+    pop ebx
+    pop ebx
+    mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+    popa
+    add esp, 8
+    iret 
 isr0:
     push 0
     push 0
@@ -210,3 +247,83 @@ isr31:
     push 0
     push 31
     jmp isr_common_stub
+
+irq0:
+	push 0
+	push 32
+	jmp irq_common_stub
+
+irq1:
+	push 1
+	push 33
+	jmp irq_common_stub
+
+irq2:
+	push 2
+	push 34
+	jmp irq_common_stub
+
+irq3:
+	push 3
+	push 35
+	jmp irq_common_stub
+
+irq4:
+	push 4
+	push 36
+	jmp irq_common_stub
+
+irq5:
+	push 5
+	push 37
+	jmp irq_common_stub
+
+irq6:
+	push 6
+	push 38
+	jmp irq_common_stub
+
+irq7:
+	push 7
+	push 39
+	jmp irq_common_stub
+
+irq8:
+	push 8
+	push 40
+	jmp irq_common_stub
+
+irq9:
+	push 9
+	push 41
+	jmp irq_common_stub
+
+irq10:
+	push 10
+	push 42
+	jmp irq_common_stub
+
+irq11:
+	push 11
+	push 43
+	jmp irq_common_stub
+
+irq12:
+	push 12
+	push 44
+	jmp irq_common_stub
+
+irq13:
+	push 13
+	push 45
+	jmp irq_common_stub
+
+irq14:
+	push 14
+	push 46
+	jmp irq_common_stub
+
+irq15:
+	push 15
+	push 47
+	jmp irq_common_stub

@@ -1,7 +1,4 @@
 #include "isr.h"
-#include "screen.h"
-#include "string.h"
-
 
 struct registers_t {
 	uint32_t ds;
@@ -59,6 +56,34 @@ void isr_install()
     set_idt_gate(29, (uint32_t)isr29);
     set_idt_gate(30, (uint32_t)isr30);
     set_idt_gate(31, (uint32_t)isr31);
+	
+	port_byte_out(0x20, 0x11);
+    port_byte_out(0xA0, 0x11);
+    port_byte_out(0x21, 0x20);
+    port_byte_out(0xA1, 0x28);
+    port_byte_out(0x21, 0x04);
+    port_byte_out(0xA1, 0x02);
+    port_byte_out(0x21, 0x01);
+    port_byte_out(0xA1, 0x01);
+    port_byte_out(0x21, 0x0);
+    port_byte_out(0xA1, 0x0); 
+
+	set_idt_gate(32, (uint32_t)irq0);
+    set_idt_gate(33, (uint32_t)irq1);
+    set_idt_gate(34, (uint32_t)irq2);
+    set_idt_gate(35, (uint32_t)irq3);
+    set_idt_gate(36, (uint32_t)irq4);
+    set_idt_gate(37, (uint32_t)irq5);
+    set_idt_gate(38, (uint32_t)irq6);
+    set_idt_gate(39, (uint32_t)irq7);
+    set_idt_gate(40, (uint32_t)irq8);
+    set_idt_gate(41, (uint32_t)irq9);
+    set_idt_gate(42, (uint32_t)irq10);
+    set_idt_gate(43, (uint32_t)irq11);
+    set_idt_gate(44, (uint32_t)irq12);
+    set_idt_gate(45, (uint32_t)irq13);
+    set_idt_gate(46, (uint32_t)irq14);
+    set_idt_gate(47, (uint32_t)irq15);
 
 	set_idt_cpu();
 	k_print_log(SUCCESS, "ISR installed\n");
@@ -71,7 +96,7 @@ char *exception_messages[] = {
     "Breakpoint",
     "Into Detected Overflow",
     "Out of Bounds",
-    "Invalid Opcode",
+	"Invalid Opcode",
     "No Coprocessor",
 
     "Double Fault",
@@ -107,9 +132,30 @@ void isr_handler(registers *r) {
   	k_print_log(WARNING, "Received interrupt : ");
 	itoa(r->int_no, tmp);
 	k_print_string(BLACK, WHITE, tmp, -1, -1);
+	k_print_string(BLACK, WHITE, exception_messages[r->int_no], -1, -1);
 }
 
 void register_int_handler(uint8_t n, isr_t handler) {
     interrupt_handlers[n] = handler;
+}
+
+void irq_handler(registers *r) {
+	if (r->int_no >= 40)
+		port_byte_out(0xA0, 0x20);
+	port_byte_out(0x20, 0X20);
+
+	if(interrupt_handlers[r->int_no] != 0) {
+		isr_t handler = interrupt_handlers[r->int_no];
+		handler(r);
+	}
+}
+
+void irq_install()
+{
+	asm volatile("sti");
+	init_timer(50);
+	k_print_log(SUCCESS, "IRQ0 [Timer]: installed\n");
+	init_keyboard();
+	k_print_log(SUCCESS, "IRQ [Keyboard]: installed\n");
 }
 
