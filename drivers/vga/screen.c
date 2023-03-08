@@ -88,7 +88,7 @@ void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t 
 	
 	if (offset >= MAX_ROWS*MAX_COLS *2) {
 		for (i = 1; i < MAX_ROWS; i++)
-			memcpy((void*)video_mem + coordToOffset(0, i), (void*)video_mem + coordToOffset(0, i-1), MAX_COLS * 2);
+			memcpy((void*)video_mem + coordToOffset(0, i-1), (void*)video_mem + coordToOffset(0, i), MAX_COLS * 2);
 
 		for (i = 0; i < MAX_COLS * 2; i++)
 			((char*)(video_mem + coordToOffset(0, MAX_ROWS-1)))[i] = 0;
