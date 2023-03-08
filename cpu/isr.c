@@ -154,8 +154,8 @@ void irq_install()
 {
 	asm volatile("sti");
 	init_timer(50);
-	k_print_log(SUCCESS, "IRQ0 [Timer]: installed\n");
+	k_print_log(SUCCESS, "IRQ 0 [Timer]: installed\n");
 	init_keyboard();
-	k_print_log(SUCCESS, "IRQ [Keyboard]: installed\n");
+	k_print_log(SUCCESS, "IRQ 1 [Keyboard]: installed\n");
 }
 
