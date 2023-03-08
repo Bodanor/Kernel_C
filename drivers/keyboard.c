@@ -25,6 +25,8 @@ void keyboard_callback(registers *regs)
 	
 	else if (scancode == ENTER)
 		current_letter = ENTER;
+	else if (scancode == BACKSPACE)
+		current_letter = BACKSPACE;
 	else {
 		current_letter = sc_ascii[(int)scancode];
 	}
