@@ -71,7 +71,7 @@ void read_rtc() {
 
 	if (!(registerB & 0x04)) {
 		current_rtc.second = (current_rtc.second & 0x0f) + ((current_rtc.second / 16)*10);
-		current_rtc.minute = (current_rtc.month & 0x0f) + ((current_rtc.month/ 16)*10);
+		current_rtc.minute = (current_rtc.minute & 0x0f) + ((current_rtc.minute/ 16)*10);
 		current_rtc.hour = ((current_rtc.hour & 0x0f) + (((current_rtc.hour & 0x70)/ 16)*10)) | (current_rtc.hour & 0x80);
 		current_rtc.day = (current_rtc.day & 0x0f) + ((current_rtc.day / 16)*10);
 		current_rtc.month = (current_rtc.month & 0x0f ) + ((current_rtc.month / 16) *10);
@@ -86,7 +86,7 @@ void read_rtc() {
 		if (century_register != 0)
 			current_rtc.year += century *100;
 		else {
-			current_rtc.year += (CURRENT_YEAR + 100)*100;
+			current_rtc.year += (CURRENT_YEAR / 100)*100;
 			if (current_rtc.year < CURRENT_YEAR)
 				current_rtc.year += 100;
 		}
