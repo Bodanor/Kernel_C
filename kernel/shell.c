@@ -1,4 +1,5 @@
 #include "shell.h"
+#include "screen.h"
 
 #define DEBUG __asm__("xchgw %bx, %bx")
 static char user_input[USER_MAX_INPUT];
@@ -13,8 +14,7 @@ void init_shell()
 
 void shell_prompt(void)
 {
-	k_print_string(BLACK, WHITE, "Kernel #~ :", -1, -1);
-
+	k_printf("%s", "Kernel #~ : ");
 }
 
 void shell_loop()

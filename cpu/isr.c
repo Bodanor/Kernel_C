@@ -86,7 +86,7 @@ void isr_install()
     set_idt_gate(47, (uint32_t)irq15);
 
 	set_idt_cpu();
-	k_print_log(SUCCESS, "ISR installed\n");
+	k_printf("<0> ISR installed\n");
 }
 
 char *exception_messages[] = {
@@ -129,7 +129,7 @@ char *exception_messages[] = {
 
 void isr_handler(registers *r) {
 	char tmp[3];
-  	k_print_log(WARNING, "Received interrupt : ");
+  	k_printf("<2> Received interrupt : ");
 	itoa(r->int_no, tmp);
 	k_print_string(BLACK, WHITE, tmp, -1, -1);
 	k_print_string(BLACK, WHITE, exception_messages[r->int_no], -1, -1);
@@ -154,8 +154,8 @@ void irq_install()
 {
 	asm volatile("sti");
 	init_timer(50);
-	k_print_log(SUCCESS, "IRQ 0 [Timer]: installed\n");
+	k_printf("<0> IRQ 0 [Timer]: installed\n");
 	init_keyboard();
-	k_print_log(SUCCESS, "IRQ 1 [Keyboard]: installed\n");
+	k_printf("<0> IRQ 1 [Keyboard]: installed\n");
 }
 
