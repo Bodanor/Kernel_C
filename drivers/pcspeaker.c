@@ -19,6 +19,6 @@ void beep_pc_speaker(uint32_t nFrequency, uint32_t time)
 
 void stop_pc_speaker(void)
 {
-	uint8_t tmp = port_byte_in(0x61);
+	uint8_t tmp = port_byte_in(0x61) & 0xFC;
 	port_byte_out(0x61, tmp);
 }
