@@ -5,6 +5,7 @@
 #include "keyboard.h"
 #include "screen.h"
 #include "string.h"
+#include "pcspeaker.h"
 
 #define USER_MAX_INPUT 256
 

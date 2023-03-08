@@ -1,6 +1,4 @@
 #include "shell.h"
-#include "keyboard.h"
-#include "screen.h"
 
 #define DEBUG __asm__("xchgw %bx, %bx")
 static char user_input[USER_MAX_INPUT];
@@ -25,14 +23,16 @@ void shell_loop()
 	while (1) {
 		shell_prompt();
 		shell_input();		
-		if (strcmp(user_input, "SHUTDOWN") == 0) {
+		if (*user_input != '\0') {
+			if (strcmp(user_input, "SHUTDOWN") == 0) {
 
-		}
-		else if (strcmp(user_input, "REBOOT") == 0) {
+			}
+			else if (strcmp(user_input, "REBOOT") == 0) {
 
-		}
-		else{
-			k_print_string(BLACK, RED, "Command not found !\n", -1, -1);
+			}
+			else{
+				k_print_string(BLACK, RED, "Command not found !\n", -1, -1);
+			}
 		}
 	}
 	
@@ -51,7 +51,7 @@ void shell_input(void)
 				k_print_backspace();
 				}
 			else {
-				// Beep sound soon 
+				beep_pc_speaker(1000, 10);
 			}
 		}
 		else {
