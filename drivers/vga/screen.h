@@ -41,4 +41,5 @@ void k_print_string(uint8_t background, uint8_t foreground, const char *string, 
 void k_print_chr(uint8_t background, uint8_t forefround, const char chr, int8_t x, int8_t y);
 void k_print_log(uint8_t log_type, const char *string);
 void k_print_backspace(void);
+void k_print_clear_screen(void);
 #endif

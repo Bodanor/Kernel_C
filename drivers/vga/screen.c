@@ -134,3 +134,13 @@ void k_print_backspace(void)
 	int offset = coordToOffset(curr_x, curr_y) - 2;
 	k_print_chr(BLACK, WHITE, 0x08, offsetToCol(offset), offsetToRow(offset));
 }
+
+void k_print_clear_screen(void)
+{
+	int i;
+
+	curr_x = curr_y = 0;
+	for (i = 0; i < MAX_COLS *MAX_ROWS*2; i+=2){
+		*(video_mem + i) = ' ';
+	}
+}
