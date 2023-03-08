@@ -32,3 +32,18 @@ int strlen(const char *src)
 		;
 	return tmp-src;
 }
+
+int strcmp(const char *src, const char *src2)
+{
+	unsigned char c1, c2;
+
+	while (1) {
+		c1 = *src++;
+		c2 = *src2++;
+		if (c1 != c2)
+			return c1 < c2 ? -1 : 1;
+		if (!c1)
+			break;
+	}
+	return 0;
+}

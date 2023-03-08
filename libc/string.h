@@ -5,4 +5,5 @@
 void itoa(int n, char *buffer);
 void reverse(char *s);
 int strlen(const char *src);
+int strcmp(const char *src, const char *src2);
 #endif
