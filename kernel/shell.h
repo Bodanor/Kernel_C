@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "keyboard.h"
 #include "screen.h"
+#include "string.h"
 
 #define USER_MAX_INPUT 256
 

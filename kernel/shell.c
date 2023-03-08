@@ -24,8 +24,16 @@ void shell_loop()
 
 	while (1) {
 		shell_prompt();
-		shell_input();
+		shell_input();		
+		if (strcmp(user_input, "SHUTDOWN") == 0) {
 
+		}
+		else if (strcmp(user_input, "REBOOT") == 0) {
+
+		}
+		else{
+			k_print_string(BLACK, RED, "Command not found !\n", -1, -1);
+		}
 	}
 	
 
@@ -37,8 +45,20 @@ void shell_input(void)
 	char *user_input_pt = &user_input[0];
 
 	while ((c = getLastInput()) != ENTER) {
-		k_print_chr(BLACK, WHITE, c, -1, -1);
-		*user_input_pt++ = c;
+		if (c == BACKSPACE) {
+			if (user_input_pt != &user_input[0]) {
+				*--user_input_pt = '\0';
+				k_print_backspace();
+				}
+			else {
+				// Beep sound soon 
+			}
+		}
+		else {
+
+			k_print_chr(BLACK, WHITE, c, -1, -1);
+			*user_input_pt++ = c;
+		}
 	}
 	*user_input_pt++ = '\0';
 	k_print_chr(BLACK, WHITE, '\n', -1,-1);
