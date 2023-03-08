@@ -6,6 +6,7 @@
 #include "screen.h"
 #include "string.h"
 #include "pcspeaker.h"
+#include "timer.h"
 
 #define USER_MAX_INPUT 256
 

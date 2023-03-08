@@ -30,6 +30,9 @@ void shell_loop()
 			else if (strcmp(user_input, "REBOOT") == 0) {
 
 			}
+			else if (strcmp(user_input, "CLEAR") == 0){
+				k_print_clear_screen();
+			}
 			else{
 				k_print_string(BLACK, RED, "Command not found !\n", -1, -1);
 			}
@@ -52,6 +55,8 @@ void shell_input(void)
 				}
 			else {
 				beep_pc_speaker(1000, 10);
+				wait_timer(4);
+				stop_pc_speaker();
 			}
 		}
 		else {
