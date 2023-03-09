@@ -88,5 +88,4 @@ void read_rtc(rtc *current_rtc) {
 		if (current_rtc->year < CURRENT_YEAR)
 			current_rtc->year += 100;
 	}
-	k_printf("<0> RTC Read\n");
 }

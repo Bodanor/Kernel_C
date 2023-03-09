@@ -1,7 +1,6 @@
 #include "shell.h"
 #include "rtc.h"
 #include "screen.h"
-#include <stdint.h>
 
 #define DEBUG __asm__("xchgw %bx, %bx")
 
@@ -84,7 +83,18 @@ void uptime_command(void)
 	rtc uptime_rtc;
 	read_rtc(&uptime_rtc);
 	
-	k_printf("Uptime since boot: %d years, %d months, %d days, %d hours, %d minutes, %d seconds\n", uptime_rtc.year, uptime_rtc.month, uptime_rtc.day, uptime_rtc.hour, uptime_rtc.minute, uptime_rtc.second);
+	uint32_t boot_uptime_seconds;
+	uint32_t current_uptime_seconds;
+
+	boot_uptime_seconds = boot_rtc_time.second + (boot_rtc_time.minute *60) + (boot_rtc_time.hour *3600) + (boot_rtc_time.day*86400);
+	current_uptime_seconds = uptime_rtc.second + (uptime_rtc.minute * 60) + (uptime_rtc.hour * 3600) + (uptime_rtc.day * 86400);
+	
+	uptime_rtc.second = (current_uptime_seconds - boot_uptime_seconds) % 60;
+	uptime_rtc.minute = (current_uptime_seconds - boot_uptime_seconds) / 60;
+	uptime_rtc.hour = (current_uptime_seconds - boot_uptime_seconds) / 3600;
+	uptime_rtc.day = (current_uptime_seconds - boot_uptime_seconds) / 86400;
+
+	k_printf("Uptime since boot: %d days, %d hours, %d minutes, %d seconds\n", uptime_rtc.day, uptime_rtc.hour, uptime_rtc.minute, uptime_rtc.second);
 
 }
 
