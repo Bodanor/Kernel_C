@@ -1,8 +1,8 @@
-CC = i386-elf-gcc
-LD = i386-elf-ld
+CC = gcc
+LD = ld
 
 LDFLAGS = --oformat binary
-CCFLAGS = -ffreestanding
+CCFLAGS = -ffreestanding -m32 -fno-pie
 
 C_SOURCES := $(wildcard *.c)
 C_OBJECTS := $(C_SOURCES:.c=.o)

@@ -1,9 +1,9 @@
-AS = i386-elf-as
-CC = i386-elf-gcc
-LD = i386-elf-ld
+AS = as
+CC = gcc
+LD = ld
 
 LDFLAGS = --oformat binary
-CCFLAGS = -ffreestanding
+CCFLAGS = -ffreestanding -m32 -fno-pie
 
 AS_SRC := $(wildcard *.s)
 AS_OBJ := $(AS_SRC:.s=.o)
@@ -20,7 +20,7 @@ all:$(C_OBJECTS) $(AS_OBJ)
 
 
 %.o:%.s
-	$(AS) -o $@ $<
+	$(AS) --32 -o $@ $<
 
 -include $(DEP)
 

@@ -12,8 +12,8 @@ AS_SOURCES :=$(shell find $(SUBDIRSKERNEL) -name '*.s')
 AS_OBJETCS := $(AS_SOURCES:.s=.o)
 
 IMGDIR = IMG
-LD = i386-elf-ld
-LDFLAGS = --oformat binary -T linker.ld
+LD = ld
+LDFLAGS = --oformat binary -T linker.ld -m elf_i386
 
 export SUBDIRINCLUDE
 
